@@ -98,6 +98,12 @@ int main (int argc, char *argv[]) {
         lineConstruct(&line[], &buffer, size);
 
     }
+<<<<<<< Updated upstream
 
 }
 //cdghxdfyxdfgh
+=======
+    univerzium += 2;
+    printf(INFO"Univerzium: {%s}\n", univerzium);
+} 
+>>>>>>> Stashed changes
