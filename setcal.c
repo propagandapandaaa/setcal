@@ -88,9 +88,8 @@ int main (int argc, char *argv[]) {
         printf(INFO"String: %s\n", string);
     }
 
+
     // Provedeme operace
-
-
 }
 
 char *readString(FILE *fp, size_t size) {
@@ -114,6 +113,7 @@ char *readString(FILE *fp, size_t size) {
 
     return realloc(str, sizeof(*str)*len);
 }
+
 
 void processUniverzium() {
     if (univerzium[0] != 'U') {
