@@ -47,6 +47,24 @@ void processSet(char *input);
 // Nacte string libovolne delky
 char *readString(FILE* fp, size_t size);
 
+////////// PRIKAZY NAD MNOZINAMI//////////
+void empty(set *a){
+    if(a->item[1] == NULL)
+        printf("Set is empty\n");
+    else
+        printf("Set is not empty");
+}
+
+void card(set *a){
+    int i = 1;
+    while(a->item[i] == '\0'){
+        i++;
+    }
+    printf("Number of elements is: %d", i);
+}
+
+////////// PRIKAZY NAD RELACEMI //////////
+
 //////////// GLOBALNI PROMENNE////////////
 
 // Vstupni soubor
