@@ -18,12 +18,14 @@ typedef struct couple {
 // Relace
 typedef struct relation {
     int id;
+    int len;
     struct couple cpl[];
 } relation;
 
 // Mnozina
 typedef struct set {
     int id;
+    int len;
     char item[][MAX_LEN];
 } set;
 
@@ -47,23 +49,90 @@ void processSet(char *input);
 // Nacte string libovolne delky
 char *readString(FILE* fp, size_t size);
 
-////////// PRIKAZY NAD MNOZINAMI//////////
-void empty(set *a){
-    if(a->item[1] == NULL)
-        printf("Set is empty\n");
-    else
-        printf("Set is not empty");
+///////////// POMOCNE FUNKCE /////////////
+
+//vrací pole prvků relace ze kterých je složena
+char *getElements(relation *a){
+    char f[a->len][MAX_LEN];
+    int h = 0;
+    for(int i = 0; i < a->len; i++){
+        for(int j = 0; j <= h; j++){
+            if(a->cpl[i].first != f[j]){
+                strcpy(f[h], a->cpl[i].first);
+                h++;
+            }
+            if(a->cpl[i].second != f[j]){
+                strcpy(f[h], a->cpl[i].second);
+                h++;
+            }
+        }
+    }
+    return f;
 }
 
+////////// PRIKAZY NAD MNOZINAMI//////////
+
+//tiskne true nebo false podle toho, jestli je množina definovaná na řádku A prázdná nebo neprázdná.
+void empty(set *a){
+    if(a->item[0] == NULL)
+        printf("Set is empty: true\n");
+    else
+        printf("Set is empty: false\n");
+}
+
+//tiskne počet prvků v množině A (definované na řádku A).
 void card(set *a){
-    int i = 1;
+    int i = 0;
     while(a->item[i] == '\0'){
         i++;
     }
-    printf("Number of elements is: %d", i);
+    i++;
+    printf("Number of elements is: %d\n", i);
 }
 
 ////////// PRIKAZY NAD RELACEMI //////////
+
+//tiskne true nebo false, jestli je relace reflexivní.
+void reflexive(relation *a){
+    char *f = getElements(a);
+    for(int i = 0; i < a->len; i++){
+        if(a->cpl[i].first == a->cpl[i].second){
+            for(int j = 0; i < a->len; j++){
+                if(f[j] == a->cpl[i].first){
+                    f[j] = NULL;
+                    break;
+                }
+            }
+        }
+    }
+    for(int i = 0; i < a->len; i++){
+        if(f[i] != NULL || f[i] != '\0')
+            printf("Relation is reflexive: false\n");
+            return 0;
+    }
+    printf("Relation is reflexive: true\n");
+}
+
+//tiskne true nebo false, jestli je relace symetrická.
+void symmetric(relation *a){
+    int f = 0;
+    for(int i = 0; i < a->len; i++){
+        if(a->cpl[i].first != a->cpl[i].second){
+            for(int j = 0; j < a->len; j++){
+                if(a->cpl[i].first == a->cpl[j].second && a->cpl[i].second == a->cpl[j].first){
+                    f = 1;
+                    break;
+                }
+            }
+        }
+        if(f == 0){
+            printf("Relation is symmetric: false\n");
+            return 0;
+        }
+        f = 0;
+    }
+    printf("Relation is symmetric: true\n");
+}
 
 //////////// GLOBALNI PROMENNE////////////
 
