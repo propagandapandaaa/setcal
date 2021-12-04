@@ -94,6 +94,63 @@ void card(set *a){
     printf("Number of elements is: %d\n", i);
 }
 
+//tiskne true nebo false, jestli jsou množiny rovny
+bool equals(set *a, set *b)
+{
+    if(a->len != b->len)
+    {
+        printf("Sets are equal: false\n");
+        return true;
+    } 
+    for(int i = 0; i < a->len; i++)
+    {
+        if(a->items[i] != b->items[i])
+        {
+        printf("Sets are equal: false\n");
+        return false;
+        }
+    }
+    printf("Sets are equal: true\n");
+}
+
+//tiskne true nebo false podle toho, jestli je množina A podmnožinou množiny B
+void subseteq(set *a, set *b){
+    bool f = false;
+    for(int i = 0; i < a->len; i++){
+        for(int j = 0; j < b->len; j++){
+            if(a->items[i] == b->items[j])
+                f = true;
+        }
+        if(f == false){
+            printf("Set A is subset of B: flase\n");
+            return;
+        }
+        f = false;
+    }
+    printf("Set A is subset of B: true\n");
+}
+
+//tiskne true nebo false, jestli je množina A vlastní podmnožina množiny B
+void subset(set *a, set *b){
+    if(a->len == b->len){
+        printf("Set A is ownsubset of B: false\n");
+        return;
+    }
+    bool f = false;
+    for(int i = 0; i < a->len; i++){
+        for(int j = 0; j < b->len; j++){
+            if(a->items[i] == b->items[j])
+                f = true;
+        }
+        if(f == false){
+            printf("Set A is ownsubset of B: flase\n");
+            return;
+        }
+        f = false;
+    }
+    printf("Set A is ownsubset of B: true\n");
+}
+
 ////////// PRIKAZY NAD RELACEMI //////////
 
 //tiskne true nebo false, jestli je relace reflexivní.
@@ -138,26 +195,6 @@ bool symmetric(relation *a){
     }
     printf("Relation is symmetric: true\n");
     return true;
-}
-
-
-//tiskne true nebo false podle toho zda se mnoziny rovnaji nebo ne
-bool equals(set *a, set *b)
-{
-    if(a->len != b->len)
-    {
-        printf("Sets are equal: false");
-        return true;
-    } 
-    for(int i = 0; i < a->len; i++)
-    {
-        if(a->items[i] != b->items[i])
-        {
-        printf("Sets are equal: false");
-        return false;
-        }
-    }
-    printf("Sets are equal: true");
 }
 
 //Vrati true jestli ke kazdemu prvku z mnoziny b je mozne priradit prvek z mnoziny a 
