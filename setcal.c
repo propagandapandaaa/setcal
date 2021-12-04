@@ -74,7 +74,7 @@ char *getElements(relation *a){
 
 //tiskne true nebo false podle toho, jestli je množina definovaná na řádku A prázdná nebo neprázdná.
 void empty(set *a){
-    if(a->item[0] == NULL)
+    if(a->item[0] == NULL || a->item[0] == '\0')
         printf("Set is empty: true\n");
     else
         printf("Set is empty: false\n");
