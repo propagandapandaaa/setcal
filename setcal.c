@@ -115,7 +115,7 @@ void complement(set *a) {
     printf("Complement is: %s\n", compl);
 }
 
-//tiskne sjednonecí monžin A a B
+//tiskne sjednocení monžin A a B
 void union(set *a, set *b) {
     char *u = getElements(a);
     int count = 0;
@@ -132,7 +132,7 @@ void union(set *a, set *b) {
     if(count > 0) {
         strcat(u, b->items[i]);
     }
-    printf("Union is: %s\n", u)
+    printf("Union is: %s\n", u);
 }
 
 ////////// PRIKAZY NAD RELACEMI //////////
