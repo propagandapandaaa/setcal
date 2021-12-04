@@ -19,35 +19,39 @@ typedef struct couple {
 typedef struct relation {
     int id;
     int len;
-    struct couple cpl[];
+    struct couple *cpl;
+    struct relation *next;
 } relation;
 
 // Mnozina
 typedef struct set {
     int id;
     int len;
-    char item[][MAX_LEN];
+    char **items;
+    struct set *next;
 } set;
+
 
 //////////// DEKLARACE FUNKCI ////////////
 
 // Nacte vsechni prvky do univerziumu ze stringu
 void processUniverzium();
 
-// Prida mnozinu do sets[]
-void addSet(struct set);
-
 // Prida mnozinu do relations[]
 void addRelation(struct relation);
 
 // Entry point pro prace z relacmi, mela by zavolat addRelation
-void processRelation(char *input);
+void processRelation(char *input, int line);
 
-// Entry point pro prace z mnoziny, mela by zavolat addSet
-void processSet(char *input);
+// Entry point pro prace z mnoziny
+void processSet(char *input, int line);
+
+set *getSet(int id);
+// Entry point pro operace
+void processOperation(char *input);
 
 // Nacte string libovolne delky
-char *readString(FILE* fp, size_t size);
+char *readString(FILE* fp, size_t size, int *line);
 
 ///////////// POMOCNE FUNKCE /////////////
 
@@ -74,7 +78,7 @@ char *getElements(relation *a){
 
 //tiskne true nebo false podle toho, jestli je množina definovaná na řádku A prázdná nebo neprázdná.
 void empty(set *a){
-    if(a->item[0] == NULL)
+    if(a->items[0] == NULL)
         printf("Set is empty: true\n");
     else
         printf("Set is empty: false\n");
@@ -83,7 +87,7 @@ void empty(set *a){
 //tiskne počet prvků v množině A (definované na řádku A).
 void card(set *a){
     int i = 0;
-    while(a->item[i] == '\0'){
+    while(a->items[i] == '\0'){
         i++;
     }
     i++;
@@ -205,14 +209,18 @@ bool bijective(set *a, set *b)
 
 //////////// GLOBALNI PROMENNE////////////
 
-// Vstupni soubor
-FILE *file;
 
 char *univerzium;
-struct set *sets;
-struct relation *relations;
+struct set *firstSet = NULL;
+struct set *lastSet = NULL;
+struct relation *firstRelation = NULL;
+struct relation *lastRelation = NULL;
+
 
 int main (int argc, char *argv[]) {
+    FILE *file;
+    int lineNumber = 0;
+    char operation;
 // Odkomentovane, pro testovani pouzita hard-coded cesta
 //    if(argc < 2) {
 //        fprintf(stderr, "No file selected");
@@ -225,48 +233,72 @@ int main (int argc, char *argv[]) {
     if (file == NULL) {
         fprintf(stderr, "File does not exist");
     }
-
     // Nacist univerzium
-    univerzium = readString(file, INPUT_LEN);
+    univerzium = readString(file, INPUT_LEN, &lineNumber);
     processUniverzium();
 
     // Nacteme mnoziny a relace
-    char *string;
+    char *inputString;
     while (true) {
-        string = readString(file, INPUT_LEN);
-        if (strlen(string) == 0) {
-            printf(INFO"Konec souboru\n");
-            exit(1);
-        } else if ( string[0] != 'S' && string[0] != 'R') {
-            printf(INFO"Konec mnozin a relaci");
+        inputString = readString(file, INPUT_LEN, &lineNumber);
+        // Jestli radek je prazdny, to je konec souboru
+        if (strlen(inputString) == 0) {
+            exit(0);
+        }
+        // Ulozim operace a zbavim se z ni v stringu
+        operation = inputString[0];
+        inputString += 2;
+        // Jestli to neni mnozina ani relace, pokracujeme na provedeni operaci
+        if (operation != 'S' && operation != 'R') {
             break;
         }
-        printf(INFO"String: %s\n", string);
+        // Provedeme nacteni mnoziny nebo relace
+        if (operation == 'S') {
+            processSet(inputString, lineNumber);
+        } else {
+            processRelation(inputString, lineNumber);
+        }
     }
 
-
     // Provedeme operace
+    while (strlen(inputString) == 0) {
+        processOperation(inputString);
+        readString(file, INPUT_LEN, &lineNumber);
+    }
 }
 
-char *readString(FILE *fp, size_t size) {
+char *readString(FILE *fp, size_t size, int *line) {
     char *str;
     int ch;
     size_t len = 0;
     str = realloc(NULL, sizeof(*str) * size);
     if (!str) {
-        return NULL;
+        printf("Error allocating memory, exiting program\n");
+        exit(1);
     }
     while(EOF != (ch = fgetc(fp)) && ch != '\n'){
         str[len++] = ch;
         if (len == size) {
             str = realloc(str, sizeof(*str) * (size += 16));
             if (!str) {
-                return NULL;
+                printf("Error allocating memory, exiting program\n");
+                exit(1);
             }
         }
     }
     str[len++]='\0';
-
+    char operation = str[0];
+    switch (operation) {
+        case 'U':
+        case 'S':
+        case 'R':
+        case 'C':
+            break;
+        default:
+            printf("Unknown operation: operation {%c} is not supported, exiting program\n", operation);
+            exit(1);
+    }
+    *line += 1;
     return realloc(str, sizeof(*str)*len);
 }
 
@@ -276,6 +308,76 @@ void processUniverzium() {
         printf("Spatny format pro univerzium\n");
         exit(1);
     }
+    processSet(univerzium, 1);
     univerzium += 2;
-    printf(INFO"Univerzium: {%s}\n", univerzium);
+}
+
+void processSet(char *input, int line) {
+    // Na zacatku zkontrolujeme jestli vsechny prvku jsou v univerziu,i a zjistime velikost mnoziny
+    int setSize = 0;
+    // Potrebujeme kopii inputu, protoze strtok zmeni puvodni string
+    char *inputCopy = malloc(strlen(input) * sizeof(char));
+    strcpy(inputCopy, input);
+    char *setEntry = strtok(inputCopy, " ");
+    while(setEntry != NULL) {
+        if (strlen(setEntry) > MAX_LEN) {
+            printf("Set entry exceeds length of 30 characters, exiting\n");
+            exit(1);
+        }
+        if ((strstr(univerzium, setEntry) == NULL) && line != 1) {
+            printf("Set entry {%s} does not exist in univerzium, exiting\n", setEntry);
+            exit(1);
+        }
+        setSize++;
+        setEntry = strtok(NULL, " ");
+    }
+    // Alokujeme pamet pro prvky mnoziny a vlzozime tyto prvky
+    char **setEntries = malloc(setSize * sizeof(char *));
+    strcpy(inputCopy, input);
+    setEntry = strtok(inputCopy, " ");
+    for (int i = 0; i < setSize; ++i) {
+        setEntries[i] = (char *) malloc (MAX_LEN);
+        strcpy(setEntries[i], setEntry);
+    }
+    // Vytvorime novy set
+    set *currentSet;
+    currentSet = malloc(sizeof(set));
+    currentSet->id = line;
+    currentSet->len = setSize;
+    currentSet->items = setEntries;
+    currentSet->next = NULL;
+    // Jestli firstSet == NULL, jedna se o prvni set v programu, v opacnem pripade potrebujeme zmenit odkazy
+    if (firstSet == NULL) {
+        firstSet = currentSet;
+        lastSet = currentSet;
+    } else {
+        lastSet->next = currentSet;
+        lastSet = currentSet;
+    }
+    free(inputCopy);
+}
+
+set *getSet(int id) {
+    if (firstSet == NULL) {
+        printf("Get set was called when no set was read, exiting\n");
+        exit(1);
+    }
+    struct set *currentSet = firstSet;
+    while (true) {
+        if (currentSet->id == id) {
+            return currentSet;
+        }
+        if (currentSet->next == NULL) {
+            printf("Set with id {%d} does not exist, exiting\n");
+        }
+        currentSet = currentSet->next;
+    }
+}
+
+void processRelation(char *input, int line) {
+
+}
+
+void processOperation(char *input) {
+
 }
