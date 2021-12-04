@@ -144,7 +144,7 @@ void equals(set *a, set *b)
         printf("Sets are equal: false");
         return 0;
     } 
-    for(int i = 0; i < a->len)
+    for(int i = 0; i < a->len; i++)
     {
         if(a->item[i] != b->item[i])
         {
