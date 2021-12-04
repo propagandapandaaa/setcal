@@ -133,6 +133,64 @@ void symmetric(relation *a){
     }
     printf("Relation is symmetric: true\n");
 }
+//tiskne true nebo false, jestli je relace surjektivni
+//kazdy prvek z a ma obraz v b
+
+//tiskne true nebo false podle toho zda se mnoziny rovnaji nebo ne
+void equals(set *a, set *b)
+{
+    if(a->len != b->len)
+    {
+        printf("Sets are equal: false");
+        return 0;
+    } 
+    for(int i = 0; i < a->len)
+    {
+        if(a->item[i] != b->item[i])
+        {
+        printf("Sets are equal: false");
+        return 0;
+        }
+    }
+    printf("Sets are equal: true");
+}
+
+
+
+bool injective(set *a, set *b)
+{
+
+}
+//Vrati true jestli ke kazdemu prvku z mnoziny b je mozne priradit prvek z mnoziny a 
+bool surjective(set *a, set *b) {
+
+    if(b->len <= a->len)
+    {
+        printf("Relation is surjective: true\n");
+        return true;
+    }
+    else
+    {
+        printf("Relation is surjective: false\n");
+        return false;
+    }
+
+}
+
+//fce bijektivni
+bool bijective(set *a, set *b)
+{
+    if(surjective(a, b) == true && injective(a, b) == true)
+    {
+        printf("Function is bijective: true\n");
+        return true;
+    }
+    else
+    {
+        printf("Function is bijective: false\n");
+        return false;
+    }
+}
 
 //////////// GLOBALNI PROMENNE////////////
 
