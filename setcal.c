@@ -135,6 +135,53 @@ void union(set *a, set *b) {
     printf("Union is: %s\n", u);
 }
 
+//tiskne průnik množin A a B
+void intersection(set *a,set *b)
+{
+    for(int i=0;i<a->len;i++)
+    {
+        for(int j=0;j<b->len;j++)
+        {
+            if(a->items[i]!=b->items[j])
+            {
+                for(int k=i;k<a->len-1;k++)
+                {
+                    a->items[i]=a->items[i+1];
+                }
+                realloc(a);
+            }            
+        }
+    }
+    for(int l=0;l<a->len;l++)
+    {
+        printf("Intersection of sets is : %s",a->item[i]);
+    }
+}
+
+//tiskne rozdíl množin A a B
+void difference(set *a,set *b)
+{
+    for(int i=0;i<a->len;i++)
+    {
+        for(int j=0;j<b->len;j++)
+        {
+            if(a->items[i]==b->items[j])
+            {
+                for(int k=i;k<a->len-1;k++)
+                {
+                    a->items[i]=a->items[i+1];
+                }
+                realloc(a);
+            }            
+        }
+    }
+    for(int l=0;l<a->len;l++)
+    {
+        printf("Difference of sets is : %s",a->item[i]);
+    }
+
+}
+
 ////////// PRIKAZY NAD RELACEMI //////////
 
 //tiskne true nebo false, jestli je relace reflexivní.
