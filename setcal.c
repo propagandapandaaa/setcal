@@ -94,6 +94,47 @@ void card(set *a){
     printf("Number of elements is: %d\n", i);
 }
 
+//tiskne doplněk množiny A
+void complement(set *a) {
+    char *compl;
+    int count = 0;
+
+    for(int i = 0; i < strlen(univerzium); i++) {
+        for(int j = 0; j < a->len; j++){
+            if(strcmp(a->items[i], univerzium[j]) != 0) {
+                count++; 
+            } else if(strcmp(a->items[i], univerzium[j])) == 0) {
+                count = 0;
+                break;
+            }
+        }
+        if(count > 0) {
+                strcat(compl, univerzium[i]);
+            }
+    }
+    printf("Complement is: %s\n", compl);
+}
+
+//tiskne sjednonecí monžin A a B
+void union(set *a, set *b) {
+    char *u = getElements(a);
+    int count = 0;
+
+    for(int i = 0; i < a->len; i++) {
+        for(int j = 0; j < b->len; j++)
+            if(strcmp(a->items[j], b->items[i]) !=0) {
+                count++;
+        } else if(strcmp(a->items[j], b->items[i]) == 0) {
+                count = 0;
+                break;
+        }
+    }
+    if(count > 0) {
+        strcat(u, b->items[i]);
+    }
+    printf("Union is: %s\n", u)
+}
+
 ////////// PRIKAZY NAD RELACEMI //////////
 
 //tiskne true nebo false, jestli je relace reflexivní.
@@ -140,6 +181,56 @@ bool symmetric(relation *a){
     return true;
 }
 
+//tiskne true nebo false, jestli je relace antisymetrická.
+void antisymmetric(relation *a) {
+    int t = 0;
+    for(int i = 0; i < a->len; i++) {
+        if(a->cpl[i].first != a->cpl[i].second) {
+            for(int j = 0; j < a->len; j++) {
+                if(a->cpl[i].second == a->cpl[j].first && a->cpl[i].first == a->cpl[j].second) {
+                    t++;
+                    break;
+                }
+            }
+        }
+    }
+    if(t == 0) {
+        printf("Relation is antisymmetric: true\n");
+    } else if(t > 0){
+        printf("Relation is antisymmetric: false\n");
+    }
+}
+
+//tiskne true nebo false, jestli je relace tranzitivní.
+void transitive() {
+    int t = 0;
+    for(int i = 0; i < a->len; i++) {
+        if(a->cpl[i].first != a->cpl[i].second) {
+            for(int j = 1; j < a->len; j++) {
+                for(int k = 2; k < a->len; k++) {
+                    if(a->cpl[i].second == a->cpl[j].first && 
+                       a->cpl[i].first == a->cpl[k].first && 
+                       a->cpl[i].second == a->cpl[k].second) {
+                        t++;
+                        break;
+                    }
+                }
+            }
+        } else if(a->cpl[i].first == a->cpl[i].second) {
+            for(int j = 1; j < a->len; j++) {
+                if(a->cpl[i].second == a->cpl[j].first) {
+                    t++;
+                    break;
+            }
+        }
+    }
+        if(t == 0) {
+            printf("Relation is transitive: false\n");
+        } else if(t > 0){
+            printf("Relation is transitive: true\n");
+        }
+    }
+}
 
 //tiskne true nebo false podle toho zda se mnoziny rovnaji nebo ne
 bool equals(set *a, set *b)
