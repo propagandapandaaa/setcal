@@ -343,6 +343,31 @@ void transitive(relation *a) {
     }
 }
 
+//funkce na kontrolu zda relace je funkce
+bool function(set *a, relation *r){
+   int count=0;
+   for(int i = 0; i < r->len; i++)
+    {
+        int img = 0;
+        for(int j = i + 1; j < a->len; j++)
+        {
+            if(r->cpl[i].first == r->cpl[j].first)
+            {
+               count++;
+            }
+        }
+    } 
+    if(count>0)
+    {
+        printf("Relation is not a function\n");
+        return false;
+    }
+    else 
+    {
+        return true;
+        printf("Relation is a function\n");
+    }
+}
 
 //tiskne definiční obor funkce R (lze aplikovat i na relace - první prvky dvojic)
 void domain(relation *a){
