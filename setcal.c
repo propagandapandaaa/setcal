@@ -46,12 +46,21 @@ void processRelation(char *input, int line);
 // Entry point pro prace z mnoziny
 void processSet(char *input, int line);
 
+// Vraci mnozinu s prislusnym id
 set *getSet(int id);
+
+// Vraci relace s prislusnym id
+relation *getRelation(int id);
+
 // Entry point pro operace
 void processOperation(char *input);
 
 // Nacte string libovolne delky
 char *readString(FILE* fp, size_t size, int *line);
+
+void traverseSet();
+
+void traverseRelation();
 
 ///////////// POMOCNE FUNKCE /////////////
 
@@ -197,27 +206,6 @@ bool symmetric(relation *a){
     return true;
 }
 
-
-//tiskne true nebo false podle toho zda se mnoziny rovnaji nebo ne
-bool equals(set *a, set *b)
-{
-    if(a->len != b->len)
-    {
-        printf("Sets are equal: false");
-        return true;
-    } 
-    for(int i = 0; i < a->len; i++)
-    {
-        if(a->items[i] != b->items[i])
-        {
-        printf("Sets are equal: false");
-        return false;
-        }
-    }
-    printf("Sets are equal: true");
-}
-
-
 bool surjective(set *a, set *b) {
 
     if(b->len <= a->len){
@@ -230,60 +218,59 @@ bool surjective(set *a, set *b) {
 
 }
 
-//Work in progress
-bool injective(set *a, set *b, relation *r){
+// //Work in progress
+// bool injective(set *a, set *b, relation *r){
 
-    //Kontroluje zda ke kazdemu prvku A je prirazeny alespon jeden prvek B 
-    for(int i = 0; i < a->len; i++){
-        int count = 0;
-        for(int j = 0; j < r->len; j++){
-            if(a->items[i] == r->cpl[j].first){
-                count = count + 1;
-            }
-        }
-        if(count != a->len){
-            printf("Function is injective: false\n");
-            return false;
-        }
-    }
-
-
-    if(a->len <= b->len){
-        int img;
-        for(int i = 0; i < b->len; i++){
-            img = 0;   
-                for (int j = i + 1; j < b->len; j++){
-                    if(r->cpl[i].second == r->cpl[j].second){
-                        printf("Function is injective: false\n");
-                        return false;
-                    }
-                }
-            }
-        printf("Function is injective: true\n");
-        return true;
-    }
-    else{
-    printf("Function is injective: false\n");
-    return false;
-    }
-}
+//     //Kontroluje zda ke kazdemu prvku A je prirazeny alespon jeden prvek B 
+//     for(int i = 0; i < a->len; i++){
+//         int count = 0;
+//         for(int j = 0; j < r->len; j++){
+//             if(a->items[i] == r->cpl[j].first){
+//                 count = count + 1;
+//             }
+//         }
+//         if(count != a->len){
+//             printf("Function is injective: false\n");
+//             return false;
+//         }
+//     }
 
 
-/*
-bool bijective(set *a, set *b)
-{
-    if(surjective(a, b) == true && injective(a, b) == true)
-    {
-        printf("Function is bijective: true\n");
-        return true;
-    }
-    else
-    {
-        printf("Function is bijective: false\n");
-        return false;
-    }
-}
-*/
+//     if(a->len <= b->len){
+//         int img;
+//         for(int i = 0; i < b->len; i++){
+//             img = 0;   
+//                 for (int j = i + 1; j < b->len; j++){
+//                     if(r->cpl[i].second == r->cpl[j].second){
+//                         printf("Function is injective: false\n");
+//                         return false;
+//                     }
+//                 }
+//             }
+//         printf("Function is injective: true\n");
+//         return true;
+//     }
+//     else{
+//     printf("Function is injective: false\n");
+//     return false;
+//     }
+// }
+
+// //fce bijektivni
+// bool bijective(set *a, set *b)
+// {
+//     if(surjective(a, b) == true && injective(a, b) == true)
+//     {
+//         printf("Function is bijective: true\n");
+//         return true;
+//     }
+//     else
+//     {
+//         printf("Function is bijective: false\n");
+//         return false;
+//     }
+// }
+
 
 //////////// GLOBALNI PROMENNE////////////
 
@@ -343,6 +330,8 @@ int main (int argc, char *argv[]) {
         processOperation(inputString);
         readString(file, INPUT_LEN, &lineNumber);
     }
+    traverseSet();
+    traverseRelation();
 }
 
 char *readString(FILE *fp, size_t size, int *line) {
@@ -383,15 +372,15 @@ char *readString(FILE *fp, size_t size, int *line) {
 
 void processUniverzium() {
     if (univerzium[0] != 'U') {
-        printf("Spatny format pro univerzium\n");
+        printf("Wrong format for univerzium, exiting\n");
         exit(1);
     }
-    processSet(univerzium, 1);
     univerzium += 2;
+    processSet(univerzium, 1);
 }
 
 void processSet(char *input, int line) {
-    // Na zacatku zkontrolujeme jestli vsechny prvku jsou v univerziu,i a zjistime velikost mnoziny
+    // Na zacatku zkontrolujeme jestli vsechny prvku jsou v univerziu a zjistime velikost mnoziny
     int setSize = 0;
     // Potrebujeme kopii inputu, protoze strtok zmeni puvodni string
     char *inputCopy = malloc(strlen(input) * sizeof(char));
@@ -416,6 +405,7 @@ void processSet(char *input, int line) {
     for (int i = 0; i < setSize; ++i) {
         setEntries[i] = (char *) malloc (MAX_LEN);
         strcpy(setEntries[i], setEntry);
+        setEntry = strtok(NULL, " ");
     }
     // Vytvorime novy set
     set *currentSet;
@@ -447,13 +437,129 @@ set *getSet(int id) {
         }
         if (currentSet->next == NULL) {
             printf("Set with id {%d} does not exist, exiting\n");
+            exit(1);
         }
         currentSet = currentSet->next;
     }
 }
 
 void processRelation(char *input, int line) {
+    // Na zacatku zkontrolujeme jestli vsechny prvku jsou v univerziu a zjistime kolik je dvojic v relaci
+    int totalEntries = 0;
+    // Potrebujeme kopii inputu, protoze strtok zmeni puvodni string
+    char *inputCopy = malloc(strlen(input) * sizeof(char));
+    strcpy(inputCopy, input);
+    char *relationEntry = strtok(inputCopy, " ");
+    while(relationEntry != NULL) {
+        if (strlen(relationEntry) > MAX_LEN + 1) {
+            printf("Set entry exceeds length of 30 characters, exiting\n");
+            exit(1);
+        }
+        // Nasledujici blok kodu se zbavi ze zavorek a vypise chybu kdyz zavorky nejsou
+        if ((totalEntries % 2 == 0) && relationEntry[0] == '(') {
+            relationEntry++;
+        } else if ((totalEntries % 2 == 1) && relationEntry[strlen(relationEntry) - 1] == ')') {
+            relationEntry[strlen(relationEntry) - 1] = '\0';
+        } else {
+            printf("Wrong format for relation, exiting\n");
+            exit(1);
+        }
+        if ((strstr(univerzium, relationEntry) == NULL) && line != 1) {
+            exit(1);
+        }
+        totalEntries++;
+        relationEntry = strtok(NULL, " ");
+    }
+    if (totalEntries % 2) {
+        printf("Wrong format for relation, exiting\n");
+        exit(1);
+    }
+    // Alokujeme pamet pro dvojici relaci a vlzozime tyto dvojici
+    couple *couples = malloc(totalEntries / 2 * sizeof(couple));
+    strcpy(inputCopy, input);
+    relationEntry = strtok(inputCopy, " ");
+    for (int i = 0; i < totalEntries; i++) {
+        if (i % 2 == 0) {
+            relationEntry++;
+            strcpy(couples[i / 2].first, relationEntry);
+        } else {
+            relationEntry[strlen(relationEntry) - 1] = '\0';
+            strcpy(couples[i / 2].second, relationEntry);
+        }
+        relationEntry = strtok(NULL, " ");
+    }
+    // Vytvorime novou relace
+    relation *currentRelation;
+    currentRelation = malloc(sizeof(relation));
+    currentRelation->id = line;
+    currentRelation->len = totalEntries / 2;
+    currentRelation->cpl = couples;
+    currentRelation->next = NULL;
+    // Jestli firstRelation == NULL, jedna se o prvni relace v programu, v opacnem pripade potrebujeme zmenit odkazy
+    if (firstRelation == NULL) {
+        firstRelation = currentRelation;
+        lastRelation = currentRelation;
+    } else {
+        lastRelation->next = currentRelation;
+        lastRelation = currentRelation;
+    }
+    free(inputCopy);
+}
 
+relation *getRelation(int id) {
+    if (firstRelation == NULL) {
+        printf("Get relation was called when no relation was read, exiting\n");
+        exit(1);
+    }
+    struct relation *currentRelation = firstRelation;
+    while (true) {
+        if (currentRelation->id == id) {
+            return currentRelation;
+        }
+        if (currentRelation->next == NULL) {
+            printf("Relation with id {%d} does not exist, exiting\n");
+            exit(1);
+        }
+        currentRelation = currentRelation->next;
+    }
+}
+
+void traverseSet() {
+    if (firstSet == NULL) {
+        printf("Get relation was called when no relation was read, exiting\n");
+        exit(1);
+    }
+    struct set *currentSet = firstSet;
+    while (true) {
+        printf("Current set: {%d}, len {%d}\n", currentSet->id, currentSet->len);
+        printf("\tSet entries:\n");
+        for (int i = 0; i < currentSet->len; ++i) {
+            printf("\t\t{%s}\n", currentSet->items[i]);
+        }
+        if (currentSet->next == NULL) {
+            break;
+        }
+        currentSet = currentSet->next;
+    }
+}
+
+void traverseRelation() {
+    if (firstSet == NULL) {
+        printf("Get relation was called when no relation was read, exiting\n");
+        exit(1);
+    }
+    struct relation *currentRelation = firstRelation;
+    while (true) {
+        printf("Current Relation: {%d}, len {%d}\n", currentRelation->id, currentRelation->len);
+        printf("\tRelation entries:\n");
+        for (int i = 0; i < currentRelation->len; ++i) {
+            printf("\t\t({%s} {%s})\n", currentRelation->cpl[i].first, currentRelation->cpl[i].second);
+        }
+        if (currentRelation->next == NULL) {
+            break;
+        }
+        currentRelation = currentRelation->next;
+    }
 }
 
 void processOperation(char *input) {
