@@ -1,4 +1,5 @@
 U Apple Lemon Orange Banana Peach
 S Apple Banana Peach
 R (Apple Banana) (Apple Peach) (Apple Apple)
+R (Banana Banana) (Peach Peach) (Lemon Apple)
 C minus 1 2

@@ -206,70 +206,75 @@ bool symmetric(relation *a){
     return true;
 }
 
-bool surjective(set *a, set *b) {
-
-    if(b->len <= a->len){
-        
+bool surjective(set *a, set *b, relation *r) {
+    for(int i = 0; i < b->len; i++)
+    {
+        int img = 0;
+        for(int j = i + 1; j < b->len; j++){
+            if(b->items[i] == r->cpl[j].second){
+                img++;
+            }
+        }
+        if(img < 1){
+            printf("Relation is surjective: false\n");
+            return false;
+        }
     }
-    else{
-        printf("Function is surjective: false\n");
-        return false;
-    }
-
+    printf("Relation is surjective: true\n");
+    return true;
 }
 
-// //Work in progress
-// bool injective(set *a, set *b, relation *r){
 
-//     //Kontroluje zda ke kazdemu prvku A je prirazeny alespon jeden prvek B 
-//     for(int i = 0; i < a->len; i++){
-//         int count = 0;
-//         for(int j = 0; j < r->len; j++){
-//             if(a->items[i] == r->cpl[j].first){
-//                 count = count + 1;
-//             }
-//         }
-//         if(count != a->len){
-//             printf("Function is injective: false\n");
-//             return false;
-//         }
-//     }
+bool injective(set *a, set *b, relation *r){
 
+    //kontroluje zda ke kazdemu prvku A je prirazeny alespon jeden prvek B 
+    for(int i = 0; i < a->len; i++){
+        int count = 0;
+        for(int j = 0; j < r->len; j++){
+            if(a->items[i] == r->cpl[j].first){
+                count = count + 1;
+            }
+        }
+        if(count != a->len){
+            printf("Function is injective: false\n");
+            return false;
+        }
+     }
+    if(a->len <= b->len){
+        int img;
+        //Kontroluje zda se nevyskytuje druhy prvek v relacich vice nez jednou
+        for(int i = 0; i < b->len; i++){
+            img = 0;   
+                for (int j = i + 1; j < b->len; j++){
+                    if(r->cpl[i].second == r->cpl[j].second){
+                        printf("Function is injective: false\n");
+                        return false;
+                    }
+                }
+            }
+        printf("Function is injective: true\n");
+        return true;
+    }
+    else{
+    printf("Function is injective: false\n");
+    return false;
+    }
+}
 
-//     if(a->len <= b->len){
-//         int img;
-//         for(int i = 0; i < b->len; i++){
-//             img = 0;   
-//                 for (int j = i + 1; j < b->len; j++){
-//                     if(r->cpl[i].second == r->cpl[j].second){
-//                         printf("Function is injective: false\n");
-//                         return false;
-//                     }
-//                 }
-//             }
-//         printf("Function is injective: true\n");
-//         return true;
-//     }
-//     else{
-//     printf("Function is injective: false\n");
-//     return false;
-//     }
-// }
-
-// //fce bijektivni
-// bool bijective(set *a, set *b)
-// {
-//     if(surjective(a, b) == true && injective(a, b) == true)
-//     {
-//         printf("Function is bijective: true\n");
-//         return true;
-//     }
-//     else
-//     {
-//         printf("Function is bijective: false\n");
-//         return false;
-//     }
-// }
+bool bijective(set *a, set *b, relation *r){
+    if(a->len != b->len){
+        printf("Function is bijective: false\n");
+        return false;
+    }
+    if(surjective(a, b, r) == true && injective(a, b, r) == true){
+        printf("Function is bijective: true\n");
+        return true;
+    }
+    else{
+        printf("Function is bijective: false\n");
+        return false;
+    }
+}
 
 
 //////////// GLOBALNI PROMENNE////////////
@@ -443,6 +448,8 @@ set *getSet(int id) {
     }
 }
 
+
+
 void processRelation(char *input, int line) {
     // Na zacatku zkontrolujeme jestli vsechny prvku jsou v univerziu a zjistime kolik je dvojic v relaci
     int totalEntries = 0;
@@ -561,6 +568,8 @@ void traverseRelation() {
         currentRelation = currentRelation->next;
     }
 }
+
+
 
 void processOperation(char *input) {
 
