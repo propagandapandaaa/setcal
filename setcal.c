@@ -406,6 +406,10 @@ bool bijective(set *a, set *b, relation *r){
     }
 }
 
+void function(relation *R) {
+
+}
+
 
 //////////// GLOBALNI PROMENNE////////////
 
@@ -429,10 +433,12 @@ int main (int argc, char *argv[]) {
         fprintf(stderr, "Too many arguments");
         exit(1);
     }
-    char fileName = argv[1];
+    char *fileName = argv[1];
+    printf("file name is {%s}", fileName);
     file = fopen(fileName, "r");
     if (file == NULL) {
         fprintf(stderr, "File does not exist");
+        exit(1);
     }
     // Nacist univerzium
     univerzium = readString(file, INPUT_LEN, &lineNumber);
