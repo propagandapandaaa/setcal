@@ -5,7 +5,6 @@
 
 #define MAX_LEN 30
 #define INPUT_LEN 256
-#define INFO "[LOG-INFO] "
 
 //////////// DEFENICE STRUKTUR ////////////
 
@@ -37,8 +36,6 @@ typedef struct set {
 // Nacte vsechni prvky do univerziumu ze stringu
 void processUniverzium();
 
-// Prida mnozinu do relations[]
-void addRelation(struct relation);
 
 // Entry point pro prace z relacmi, mela by zavolat addRelation
 void processRelation(char *input, int line);
@@ -105,6 +102,7 @@ void card(set *a){
     printf("Number of elements is: %d\n", i);
 }
 
+
 //tiskne doplněk množiny A
 void complement(set *a) {
     extern char *univerzium;
@@ -135,8 +133,9 @@ void complement(set *a) {
 void union_(set *a, set *b) {
     char *u = getElements(a);
     int count = 0;
+    int i;
 
-    for(int i = 0; i < a->len; i++) {
+    for(i = 0; i < a->len; i++) {
         for(int j = 0; j < b->len; j++){
             if(strcmp(a->items[j], b->items[i]) != 0) {
                 count++;
@@ -167,11 +166,12 @@ void intersect(set *a,set *b){
     for(int l = 0; l < a->len; l++){
         printf("Intersection of sets is : %s", a->items[l]);
     }
+    printf("\n");
 }
 
 //tiskne rozdíl množin A \ B
 void minus(set *a,set *b){
-    for(int i=0;i<a->len;i++){
+    for(int i=0 ; i<a->len; i++){
         for(int j=0;j<b->len;j++){
             if(a->items[i]==b->items[j]){
                 for(int k=i;k<a->len-1;k++){
@@ -181,10 +181,11 @@ void minus(set *a,set *b){
             }            
         }
     }
-    for(int l = 0; l < a->len; l++){
-        printf("Difference of sets is : %s",a->items[l]);
+    printf("Difference of sets is: ");
+    for (int l = 0; l < a->len; l++){
+        printf("%s ",a->items[l]);
     }
-
+    printf("\n");
 }
 
 //tiskne true nebo false podle toho, jestli je množina A podmnožinou množiny B
@@ -341,6 +342,20 @@ void transitive(relation *a) {
     }
 }
 
+//funkce na kontrolu zda relace je funkce
+bool function(relation *r){
+   for(int i = 0; i < r->len; i++){
+        for(int j = i + 1; j < r->len; j++){
+            if(r->cpl[i].first == r->cpl[j].first){
+               printf("Relation is not a function\n");
+               return false;
+            }
+        }
+    } 
+    printf("Relation is a function\n");
+
+    return true;
+}
 
 //tiskne definiční obor funkce R (lze aplikovat i na relace - první prvky dvojic)
 void domain(relation *a){
@@ -432,6 +447,10 @@ bool bijective(set *a, set *b, relation *r){
     }
 }
 
+void function(relation *R) {
+
+}
+
 
 //////////// GLOBALNI PROMENNE////////////
 
@@ -447,17 +466,19 @@ int main (int argc, char *argv[]) {
     FILE *file;
     int lineNumber = 0;
     char operation;
-// Odkomentovane, pro testovani pouzita hard-coded cesta
-//    if(argc < 2) {
-//        fprintf(stderr, "No file selected");
-//    }
-//    if(argc > 2) {
-//        fprintf(stderr, "Too many arguments");
-//    }
-//    char fileName = argv[1];
-    file = fopen("./samples/basic.txt", "r");
+    if(argc < 2) {
+        fprintf(stderr, "No file selected\n");
+        exit(1);
+    }
+    if(argc > 2) {
+        fprintf(stderr, "Too many arguments\n");
+        exit(1);
+    }
+    char *fileName = argv[1];
+    file = fopen(fileName, "r");
     if (file == NULL) {
-        fprintf(stderr, "File does not exist");
+        fprintf(stderr, "File does not exist\n");
+        exit(1);
     }
     // Nacist univerzium
     univerzium = readString(file, INPUT_LEN, &lineNumber);
@@ -484,9 +505,8 @@ int main (int argc, char *argv[]) {
             processRelation(inputString, lineNumber);
         }
     }
-
     // Provedeme operace
-    while (strlen(inputString) == 0) {
+    while (strlen(inputString) != 0) {
         processOperation(inputString);
         readString(file, INPUT_LEN, &lineNumber);
     }
@@ -520,8 +540,12 @@ char *readString(FILE *fp, size_t size, int *line) {
         case 'C':
             break;
         default:
-            printf("Unknown operation: operation {%c} is not supported, exiting program\n", operation);
-            exit(1);
+            if (strlen(str) != 0) {
+                printf("Unknown operation: operation {%c} is not supported, exiting program\n", operation);
+                exit(1);
+            } else {
+                exit(0);
+            }
     }
     *line += 1;
     return realloc(str, sizeof(*str)*len);
@@ -533,7 +557,6 @@ void processUniverzium() {
         printf("Wrong format for univerzium, exiting\n");
         exit(1);
     }
-    univerzium += 2;
     processSet(univerzium, 1);
 }
 
@@ -740,19 +763,19 @@ void processOperation(char *input) {
         card(A);
     } else if (strcmp(command,  "complement") == 0) {
         A = getSet(readNumber());
-        complement(A);
+         complement(A);
     } else if (strcmp(command,  "union") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
-        union_(A,B);
+         union_(A,B);
     } else if (strcmp(command,  "intersect") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
-        intersect(A, B);
+      intersect(A, B);
     } else if (strcmp(command,  "minus") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
-        minus(A, B);
+      minus(A, B);
     } else if (strcmp(command,  "subseteq") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
@@ -773,19 +796,19 @@ void processOperation(char *input) {
         symmetric(R);
     } else if (strcmp(command,  "antisymmetric") == 0) {
         R = getRelation(readNumber());
-        antisymmetric(R);
+      antisymmetric(R);
     } else if (strcmp(command,  "transitive") == 0) {
         R = getRelation(readNumber());
-        transitive(R);
+      transitive(R);
     } else if (strcmp(command,  "function") == 0) {
         R = getRelation(readNumber());
-        function(R);
+      function(R);
     } else if (strcmp(command,  "domain") == 0) {
         R = getRelation(readNumber());
-        domain(R);
+      domain(R);
     } else if (strcmp(command,  "codomain") == 0) {
         R = getRelation(readNumber());
-        codomain(R);
+      codomain(R);
     } else if (strcmp(command,  "injective") == 0) {
         R = getRelation(readNumber());
         A = getSet(readNumber());
@@ -814,4 +837,25 @@ int readNumber() {
         exit(1);
     }
     return atoi(number);
+}
+
+//tiskne doplněk množiny A
+void complement(set *a) {
+    char *compl;
+    int count = 0;
+
+    for(int i = 0; i < strlen(univerzium); i++) {
+        for(int j = 0; j < a->len; j++){
+            if(strcmp(a->items[i], univerzium[j]) != 0) {
+                count++;
+            } else if(strcmp(a->items[i], univerzium[j]) == 0) {
+                count = 0;
+                break;
+            }
+        }
+        if(count > 0) {
+            strcat(compl, univerzium[i]);
+        }
+    }
+    printf("Complement is: %s\n", compl);
 }
