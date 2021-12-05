@@ -58,6 +58,8 @@ void processOperation(char *input);
 // Nacte string libovolne delky
 char *readString(FILE* fp, size_t size, int *line);
 
+int readNumber();
+
 void traverseSet();
 
 void traverseRelation();
@@ -384,7 +386,6 @@ int main (int argc, char *argv[]) {
         }
         // Ulozim operace a zbavim se z ni v stringu
         operation = inputString[0];
-        inputString += 2;
         // Jestli to neni mnozina ani relace, pokracujeme na provedeni operaci
         if (operation != 'S' && operation != 'R') {
             break;
@@ -402,8 +403,6 @@ int main (int argc, char *argv[]) {
         processOperation(inputString);
         readString(file, INPUT_LEN, &lineNumber);
     }
-    traverseSet();
-    traverseRelation();
 }
 
 char *readString(FILE *fp, size_t size, int *line) {
@@ -452,6 +451,7 @@ void processUniverzium() {
 }
 
 void processSet(char *input, int line) {
+    input += 2;
     // Na zacatku zkontrolujeme jestli vsechny prvku jsou v univerziu a zjistime velikost mnoziny
     int setSize = 0;
     // Potrebujeme kopii inputu, protoze strtok zmeni puvodni string
@@ -515,9 +515,8 @@ set *getSet(int id) {
     }
 }
 
-
-
 void processRelation(char *input, int line) {
+    input += 2;
     // Na zacatku zkontrolujeme jestli vsechny prvku jsou v univerziu a zjistime kolik je dvojic v relaci
     int totalEntries = 0;
     // Potrebujeme kopii inputu, protoze strtok zmeni puvodni string
@@ -636,8 +635,96 @@ void traverseRelation() {
     }
 }
 
-
-
 void processOperation(char *input) {
+    set *A;
+    set *B;
+    relation *R;
+    if (input[0] != 'C') {
+        printf("Every command must start with \"C\", exiting\n");
+        exit(1);
+    }
+    input += 2;
+    char *command = strtok(input, " ");
+    if (strcmp(command, "empty") == 0) {
+        A = getSet(readNumber());
+        empty(A);
+    } else if (strcmp(command, "card") == 0) {
+        A = getSet(readNumber());
+        card(A);
+    } else if (strcmp(command,  "complement") == 0) {
+        A = getSet(readNumber());
+        // complement(A);
+    } else if (strcmp(command,  "union") == 0) {
+        A = getSet(readNumber());
+        B = getSet(readNumber());
+        // union(A,B);
+    } else if (strcmp(command,  "intersect") == 0) {
+        A = getSet(readNumber());
+        B = getSet(readNumber());
+//      intersect(A, B);
+    } else if (strcmp(command,  "minus") == 0) {
+        A = getSet(readNumber());
+        B = getSet(readNumber());
+//      minus(A, B);
+    } else if (strcmp(command,  "subseteq") == 0) {
+        A = getSet(readNumber());
+        B = getSet(readNumber());
+        subseteq(A, B);
+    } else if (strcmp(command,  "subset") == 0) {
+        A = getSet(readNumber());
+        B = getSet(readNumber());
+        subset(A, B);
+    } else if (strcmp(command,  "equals") == 0) {
+        A = getSet(readNumber());
+        B = getSet(readNumber());
+        equals(A, B);
+    } else if (strcmp(command,  "reflexive") == 0) {
+        R = getRelation(readNumber());
+        reflexive(R);
+    } else if (strcmp(command,  "symmetric") == 0) {
+        R = getRelation(readNumber());
+        symmetric(R);
+    } else if (strcmp(command,  "antisymmetric") == 0) {
+        R = getRelation(readNumber());
+//      antisymmetric(R);
+    } else if (strcmp(command,  "transitive") == 0) {
+        R = getRelation(readNumber());
+//      transitive(R);
+    } else if (strcmp(command,  "function") == 0) {
+        R = getRelation(readNumber());
+//      function(R);
+    } else if (strcmp(command,  "domain") == 0) {
+        R = getRelation(readNumber());
+//      domain(R);
+    } else if (strcmp(command,  "codomain") == 0) {
+        R = getRelation(readNumber());
+//      codomain(R);
+    } else if (strcmp(command,  "injective") == 0) {
+        R = getRelation(readNumber());
+        A = getSet(readNumber());
+        B = getSet(readNumber());
+        injective(A, B, R);
+    } else if (strcmp(command,  "surjective") == 0) {
+        R = getRelation(readNumber());
+        A = getSet(readNumber());
+        B = getSet(readNumber());
+        surjective(A, B, R);
+    } else if (strcmp(command,  "bijective") == 0) {
+        R = getRelation(readNumber());
+        A = getSet(readNumber());
+        B = getSet(readNumber());
+        bijective(A, B, R);
+    } else {
+        printf("Operation {$s} is undefined, exiting\n");
+        exit(1);
+    }
+}
 
+int readNumber() {
+    char *number = strtok(NULL, " ");
+    if (number == NULL) {
+        printf("Operation argument is missing, exiting\n");
+        exit(1);
+    }
+    return atoi(number);
 }
