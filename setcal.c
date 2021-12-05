@@ -113,14 +113,14 @@ void complement(set *a) {
         for(int j = 0; j < a->len; j++){
             if(strcmp(a->items[i], univerzium[j]) != 0) {
                 count++; 
-            } else if(strcmp(a->items[i], univerzium[j])) == 0) {
+            } else if(strcmp(a->items[i], univerzium[j]) == 0) {
                 count = 0;
                 break;
             }
         }
         if(count > 0) {
             if(compl[0] == '\0') {
-                strcpy(compl, univerzium[i])
+                strcpy(compl, univerzium[i]);
             } else {
                 strcat(compl, univerzium[i]);
             }
