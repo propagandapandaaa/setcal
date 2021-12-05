@@ -141,11 +141,12 @@ void intersect(set *a,set *b){
     for(int l = 0; l < a->len; l++){
         printf("Intersection of sets is : %s", a->items[l]);
     }
+    printf("\n");
 }
 
 //tiskne rozdíl množin A \ B
 void minus(set *a,set *b){
-    for(int i=0;i<a->len;i++){
+    for(int i=0 ; i<a->len; i++){
         for(int j=0;j<b->len;j++){
             if(a->items[i]==b->items[j]){
                 for(int k=i;k<a->len-1;k++){
@@ -155,10 +156,11 @@ void minus(set *a,set *b){
             }            
         }
     }
-    for(int l = 0; l < a->len; l++){
-        printf("Difference of sets is : %s",a->items[l]);
+    printf("Difference of sets is: ");
+    for (int l = 0; l < a->len; l++){
+        printf("%s ",a->items[l]);
     }
-
+    printf("\n");
 }
 
 //tiskne true nebo false podle toho, jestli je množina A podmnožinou množiny B
@@ -440,17 +442,17 @@ int main (int argc, char *argv[]) {
     int lineNumber = 0;
     char operation;
     if(argc < 2) {
-        fprintf(stderr, "No file selected");
+        fprintf(stderr, "No file selected\n");
         exit(1);
     }
     if(argc > 2) {
-        fprintf(stderr, "Too many arguments");
+        fprintf(stderr, "Too many arguments\n");
         exit(1);
     }
     char *fileName = argv[1];
     file = fopen(fileName, "r");
     if (file == NULL) {
-        fprintf(stderr, "File does not exist");
+        fprintf(stderr, "File does not exist\n");
         exit(1);
     }
     // Nacist univerzium
@@ -530,7 +532,6 @@ void processUniverzium() {
         printf("Wrong format for univerzium, exiting\n");
         exit(1);
     }
-    univerzium += 2;
     processSet(univerzium, 1);
 }
 
