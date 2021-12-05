@@ -103,25 +103,6 @@ void card(set *a){
     printf("Number of elements is: %d\n", i);
 }
 
-//tiskne true nebo false, jestli jsou množiny rovny
-bool equals(set *a, set *b)
-{
-    if(a->len != b->len)
-    {
-        printf("Sets are equal: false\n");
-        return true;
-    } 
-    for(int i = 0; i < a->len; i++)
-    {
-        if(a->items[i] != b->items[i])
-        {
-        printf("Sets are equal: false\n");
-        return false;
-        }
-    }
-    printf("Sets are equal: true\n");
-}
-
 //tiskne true nebo false podle toho, jestli je množina A podmnožinou množiny B
 void subseteq(set *a, set *b){
     bool f = false;
@@ -158,6 +139,25 @@ void subset(set *a, set *b){
         f = false;
     }
     printf("Set A is ownsubset of B: true\n");
+}
+
+//tiskne true nebo false, jestli jsou množiny rovny
+bool equals(set *a, set *b)
+{
+    if(a->len != b->len)
+    {
+        printf("Sets are equal: false\n");
+        return true;
+    } 
+    for(int i = 0; i < a->len; i++)
+    {
+        if(a->items[i] != b->items[i])
+        {
+        printf("Sets are equal: false\n");
+        return false;
+        }
+    }
+    printf("Sets are equal: true\n");
 }
 
 ////////// PRIKAZY NAD RELACEMI //////////
@@ -204,6 +204,24 @@ bool symmetric(relation *a){
     }
     printf("Relation is symmetric: true\n");
     return true;
+}
+
+//tiskne definiční obor funkce R (lze aplikovat i na relace - první prvky dvojic)
+void domain(relation *a){
+    printf("D(f): {%s", a->cpl[0].first);
+    for (int i = 1; i < a->len; i++){
+        printf(", %s", a->cpl[i].first);
+    }
+    printf("}\n");
+}
+
+//
+void codomain(relation *a){
+    printf("H(f): {%s", a->cpl[0].second);
+    for (int i = 1; i < a->len; i++){
+        printf(", %s", a->cpl[i].second);
+    }
+    printf("}\n");
 }
 
 //tiskne true nebo false, jestli je funkce R injektivní. A a B jsou množiny; a∈A, b∈B, (a,b)∈R
