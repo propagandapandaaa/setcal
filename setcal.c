@@ -107,6 +107,7 @@ void card(set *a){
 
 /tiskne doplněk množiny A
 void complement(set *a) {
+    extern char *univerzium;
     char *compl;
     int count = 0;
 
