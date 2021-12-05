@@ -120,8 +120,12 @@ void complement(set *a) {
             }
         }
         if(count > 0) {
+            if(compl[0] == '\0') {
+                strcpy(compl, univerzium[i]);
+            } else {
                 strcat(compl, univerzium[i]);
             }
+         }
     }
     printf("Complement is: %s\n", compl);
 }
