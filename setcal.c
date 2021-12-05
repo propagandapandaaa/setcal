@@ -95,7 +95,7 @@ void empty(set *a){
 //tiskne počet prvků v množině A (definované na řádku A).
 void card(set *a){
     int i = 0;
-    while(a->items[i] == '\0'){
+    while(a->items[i] == NULL){
         i++;
     }
     i++;
@@ -202,22 +202,19 @@ void subset(set *a, set *b){
 }
 
 //tiskne true nebo false, jestli jsou množiny rovny
-bool equals(set *a, set *b)
-{
-    if(a->len != b->len)
-    {
+bool equals(set *a, set *b){
+    if(a->len != b->len){
         printf("Sets are equal: false\n");
         return true;
     } 
-    for(int i = 0; i < a->len; i++)
-    {
-        if(a->items[i] != b->items[i])
-        {
-        printf("Sets are equal: false\n");
-        return false;
+    for(int i = 0; i < a->len; i++){
+        if(a->items[i] != b->items[i]){
+            printf("Sets are equal: false\n");
+            return false;
         }
     }
     printf("Sets are equal: true\n");
+    return true;
 }
 
 ////////// PRIKAZY NAD RELACEMI //////////
@@ -228,17 +225,18 @@ bool reflexive(relation *a){
     for(int i = 0; i < a->len; i++){
         if(a->cpl[i].first == a->cpl[i].second){
             for(int j = 0; i < a->len; j++){
-                if(f[j] == a->cpl[i].first){
-                    f[j] = NULL;
+                if(a->cpl[j].first == a->cpl[i].first){
+                    f[j] = '\0';
                     break;
                 }
             }
         }
     }
     for(int i = 0; i < a->len; i++){
-        if(f[i] != NULL || f[i] != '\0')
+        if(f[i] != '\0'){
             printf("Relation is reflexive: false\n");
             return false;
+        }
     }
     printf("Relation is reflexive: true\n");
     return true;
@@ -389,8 +387,8 @@ bool injective(set *a, set *b, relation *r){
 
 //tiskne true nebo false, jestli je funkce R surjektivní. A a B jsou množiny; a∈A, b∈B, (a,b)∈R
 bool surjective(set *a, set *b, relation *r) {
-    for(int i = 0; i < b->len; i++)
-    {
+    int f = a->len; f++;
+    for(int i = 0; i < b->len; i++){
         int img = 0;
         for(int j = i + 1; j < b->len; j++){
             if(b->items[i] == r->cpl[j].second){
@@ -421,11 +419,6 @@ bool bijective(set *a, set *b, relation *r){
         return false;
     }
 }
-
-void function(relation *R) {
-
-}
-
 
 //////////// GLOBALNI PROMENNE////////////
 
@@ -593,7 +586,7 @@ set *getSet(int id) {
             return currentSet;
         }
         if (currentSet->next == NULL) {
-            printf("Set with id {%d} does not exist, exiting\n");
+            printf("Set with id {%d} does not exist, exiting\n", id);
             exit(1);
         }
         currentSet = currentSet->next;
@@ -675,7 +668,7 @@ relation *getRelation(int id) {
             return currentRelation;
         }
         if (currentRelation->next == NULL) {
-            printf("Relation with id {%d} does not exist, exiting\n");
+            printf("Relation with id {%d} does not exist, exiting\n", id);
             exit(1);
         }
         currentRelation = currentRelation->next;
@@ -816,20 +809,20 @@ int readNumber() {
 
 //tiskne doplněk množiny A
 void complement(set *a) {
-    char *compl;
+    char *compl = NULL;
     int count = 0;
 
-    for(int i = 0; i < strlen(univerzium); i++) {
+    for(unsigned long i = 0; i < strlen(univerzium); i++) {
         for(int j = 0; j < a->len; j++){
-            if(strcmp(a->items[i], univerzium[j]) != 0) {
+            if(strcmp(a->items[i], &univerzium[j]) != 0) {
                 count++;
-            } else if(strcmp(a->items[i], univerzium[j]) == 0) {
+            } else if(strcmp(a->items[i], &univerzium[j]) == 0) {
                 count = 0;
                 break;
             }
         }
         if(count > 0) {
-            strcat(compl, univerzium[i]);
+            strcat(compl, &univerzium[i]);
         }
     }
     printf("Complement is: %s\n", compl);
