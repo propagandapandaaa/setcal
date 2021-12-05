@@ -107,21 +107,26 @@ void card(set *a){
 
 //tiskne doplněk množiny A
 void complement(set *a) {
+    extern char *univerzium;
     char *compl;
     int count = 0;
 
-    for(int i = 0; i < strlen(univerzum); i++) {
+    for(int i = 0; i < strlen(univerzium); i++) {
         for(int j = 0; j < a->len; j++){
             if(strcmp(a->items[i], univerzium[j]) != 0) {
                 count++; 
-            } else if(strcmp(a->items[i], univerzium[j]) == 0) {
+            } else if(strcmp(a->items[i], univerzium[j])) == 0) {
                 count = 0;
                 break;
             }
         }
         if(count > 0) {
+            if(compl[0] == '\0') {
+                strcpy(compl, univerzium[i])
+            } else {
                 strcat(compl, univerzium[i]);
             }
+         }
     }
     printf("Complement is: %s\n", compl);
 }
