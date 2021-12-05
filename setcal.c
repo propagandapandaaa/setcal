@@ -106,11 +106,13 @@ void card(set *a){
 }
 
 //tiskne doplněk množiny A
+//tiskne doplněk množiny A
 void complement(set *a) {
+    extern char *univerzium;
     char *compl;
     int count = 0;
 
-    for(int i = 0; i < strlen(univerzum); i++) {
+    for(int i = 0; i < strlen(univerzium); i++) {
         for(int j = 0; j < a->len; j++){
             if(strcmp(a->items[i], univerzium[j]) != 0) {
                 count++; 
@@ -120,8 +122,12 @@ void complement(set *a) {
             }
         }
         if(count > 0) {
+            if(compl[0] == '\0') {
+                strcpy(compl, univerzium[i]);
+            } else {
                 strcat(compl, univerzium[i]);
             }
+         }
     }
     printf("Complement is: %s\n", compl);
 }
@@ -130,8 +136,9 @@ void complement(set *a) {
 void union_(set *a, set *b) {
     char *u = getElements(a);
     int count = 0;
+    int i;
 
-    for(int i = 0; i < a->len; i++) {
+    for(i = 0; i < a->len; i++) {
         for(int j = 0; j < b->len; j++){
             if(strcmp(a->items[j], b->items[i]) != 0) {
                 count++;
