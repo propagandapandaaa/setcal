@@ -151,7 +151,7 @@ bool equals(set *a, set *b)
     } 
     for(int i = 0; i < a->len; i++)
     {
-        if(a->item[i] != b->item[i])
+        if(a->items[i] != b->items[i])
         {
         printf("Sets are equal: false");
         return false;
@@ -160,39 +160,58 @@ bool equals(set *a, set *b)
     printf("Sets are equal: true");
 }
 
-//Vrati true jestli ke kazdemu prvku z mnoziny b je mozne priradit prvek z mnoziny a 
-bool surjective(set *a, set *b) {
+bool surjective(set *a, set *b, relation *r) {
 
-    if(b->len <= a->len)
-    {
-        printf("Function is surjective: true\n");
-        return true;
+    if(b->len <= a->len){
+        
     }
-    else
-    {
+    else{
         printf("Function is surjective: false\n");
         return false;
     }
 
 }
 
-//Vrati true jestli ke kazdemu prvku z mnoziny a je mozne priradit prvek z mnoziny b
-bool injective(set *a, set *b)
-{
-    if(a->len <= b->len)
-    {
-        printf("Function is surjective: true\n");
+
+bool injective(set *a, set *b, relation *r){
+
+    //Kontroluje zda ke kazdemu prvku A je prirazeny alespon jeden prvek B 
+    for(int i = 0; i < a->len; i++){
+        int count = 0;
+        for(int j = 0; j < r->len; j++){
+            if(a->items[i] == r->cpl[j].first){
+                count = count + 1;
+            }
+        }
+        if(count != a->len){
+            printf("Function is injective: false\n");
+            return false;
+        }
+    }
+
+
+    if(a->len <= b->len){
+        int img;
+        for(int i = 0; i < b->len; i++){
+            img = 0;   
+                for (int j = i + 1; j < b->len; j++){
+                    if(r->cpl[i].second == r->cpl[j].second){
+                        printf("Function is injective: false\n");
+                        return false;
+                    }
+                }
+            }
+        printf("Function is injective: true\n");
         return true;
     }
-    else
-    {
-        printf("Function is surjective: false\n");
-        return false;
+    else{
+    printf("Function is injective: false\n");
+    return false;
     }
 }
 
 
-//fce bijektivni
+/*
 bool bijective(set *a, set *b)
 {
     if(surjective(a, b) == true && injective(a, b) == true)
@@ -206,6 +225,7 @@ bool bijective(set *a, set *b)
         return false;
     }
 }
+*/
 
 //////////// GLOBALNI PROMENNE////////////
 
