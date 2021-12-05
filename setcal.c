@@ -206,25 +206,7 @@ bool symmetric(relation *a){
     return true;
 }
 
-bool surjective(set *a, set *b, relation *r) {
-    for(int i = 0; i < b->len; i++)
-    {
-        int img = 0;
-        for(int j = i + 1; j < b->len; j++){
-            if(b->items[i] == r->cpl[j].second){
-                img++;
-            }
-        }
-        if(img < 1){
-            printf("Relation is surjective: false\n");
-            return false;
-        }
-    }
-    printf("Relation is surjective: true\n");
-    return true;
-}
-
-
+//tiskne true nebo false, jestli je funkce R injektivní. A a B jsou množiny; a∈A, b∈B, (a,b)∈R
 bool injective(set *a, set *b, relation *r){
 
     //kontroluje zda ke kazdemu prvku A je prirazeny alespon jeden prvek B 
@@ -261,6 +243,26 @@ bool injective(set *a, set *b, relation *r){
     }
 }
 
+//tiskne true nebo false, jestli je funkce R surjektivní. A a B jsou množiny; a∈A, b∈B, (a,b)∈R
+bool surjective(set *a, set *b, relation *r) {
+    for(int i = 0; i < b->len; i++)
+    {
+        int img = 0;
+        for(int j = i + 1; j < b->len; j++){
+            if(b->items[i] == r->cpl[j].second){
+                img++;
+            }
+        }
+        if(img < 1){
+            printf("Relation is surjective: false\n");
+            return false;
+        }
+    }
+    printf("Relation is surjective: true\n");
+    return true;
+}
+
+//tiskne true nebo false, jestli je funkce R bijektivní. A a B jsou množiny; a∈A, b∈B, (a,b)∈R
 bool bijective(set *a, set *b, relation *r){
     if(a->len != b->len){
         printf("Function is bijective: false\n");
