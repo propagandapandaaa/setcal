@@ -5,7 +5,6 @@
 
 #define MAX_LEN 30
 #define INPUT_LEN 256
-#define INFO "[LOG-INFO] "
 
 //////////// DEFENICE STRUKTUR ////////////
 
@@ -37,8 +36,6 @@ typedef struct set {
 // Nacte vsechni prvky do univerziumu ze stringu
 void processUniverzium();
 
-// Prida mnozinu do relations[]
-void addRelation(struct relation);
 
 // Entry point pro prace z relacmi, mela by zavolat addRelation
 void processRelation(char *input, int line);
@@ -105,32 +102,7 @@ void card(set *a){
     printf("Number of elements is: %d\n", i);
 }
 
-//tiskne doplněk množiny A
-//tiskne doplněk množiny A
-void complement(set *a) {
-    extern char *univerzium;
-    char *compl;
-    int count = 0;
-
-    for(int i = 0; i < strlen(univerzium); i++) {
-        for(int j = 0; j < a->len; j++){
-            if(strcmp(a->items[i], univerzium[j]) != 0) {
-                count++; 
-            } else if(strcmp(a->items[i], univerzium[j]) == 0) {
-                count = 0;
-                break;
-            }
-        }
-        if(count > 0) {
-            if(compl[0] == '\0') {
-                strcpy(compl, univerzium[i]);
-            } else {
-                strcat(compl, univerzium[i]);
-            }
-         }
-    }
-    printf("Complement is: %s\n", compl);
-}
+void complement(set *a);
 
 //tiskne sjednonecí monžin A a B
 void union_(set *a, set *b) {
@@ -459,6 +431,10 @@ bool bijective(set *a, set *b, relation *r){
     }
 }
 
+void function(relation *R) {
+
+}
+
 
 //////////// GLOBALNI PROMENNE////////////
 
@@ -474,17 +450,19 @@ int main (int argc, char *argv[]) {
     FILE *file;
     int lineNumber = 0;
     char operation;
-// Odkomentovane, pro testovani pouzita hard-coded cesta
-//    if(argc < 2) {
-//        fprintf(stderr, "No file selected");
-//    }
-//    if(argc > 2) {
-//        fprintf(stderr, "Too many arguments");
-//    }
-//    char fileName = argv[1];
-    file = fopen("./samples/basic.txt", "r");
+    if(argc < 2) {
+        fprintf(stderr, "No file selected");
+        exit(1);
+    }
+    if(argc > 2) {
+        fprintf(stderr, "Too many arguments");
+        exit(1);
+    }
+    char *fileName = argv[1];
+    file = fopen(fileName, "r");
     if (file == NULL) {
         fprintf(stderr, "File does not exist");
+        exit(1);
     }
     // Nacist univerzium
     univerzium = readString(file, INPUT_LEN, &lineNumber);
@@ -511,9 +489,8 @@ int main (int argc, char *argv[]) {
             processRelation(inputString, lineNumber);
         }
     }
-
     // Provedeme operace
-    while (strlen(inputString) == 0) {
+    while (strlen(inputString) != 0) {
         processOperation(inputString);
         readString(file, INPUT_LEN, &lineNumber);
     }
@@ -547,8 +524,12 @@ char *readString(FILE *fp, size_t size, int *line) {
         case 'C':
             break;
         default:
-            printf("Unknown operation: operation {%c} is not supported, exiting program\n", operation);
-            exit(1);
+            if (strlen(str) != 0) {
+                printf("Unknown operation: operation {%c} is not supported, exiting program\n", operation);
+                exit(1);
+            } else {
+                exit(0);
+            }
     }
     *line += 1;
     return realloc(str, sizeof(*str)*len);
@@ -767,19 +748,19 @@ void processOperation(char *input) {
         card(A);
     } else if (strcmp(command,  "complement") == 0) {
         A = getSet(readNumber());
-        complement(A);
+         complement(A);
     } else if (strcmp(command,  "union") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
-        union_(A,B);
+         union_(A,B);
     } else if (strcmp(command,  "intersect") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
-        intersect(A, B);
+      intersect(A, B);
     } else if (strcmp(command,  "minus") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
-        minus(A, B);
+      minus(A, B);
     } else if (strcmp(command,  "subseteq") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
@@ -800,19 +781,19 @@ void processOperation(char *input) {
         symmetric(R);
     } else if (strcmp(command,  "antisymmetric") == 0) {
         R = getRelation(readNumber());
-        antisymmetric(R);
+      antisymmetric(R);
     } else if (strcmp(command,  "transitive") == 0) {
         R = getRelation(readNumber());
-        transitive(R);
+      transitive(R);
     } else if (strcmp(command,  "function") == 0) {
         R = getRelation(readNumber());
-        function(R);
+      function(R);
     } else if (strcmp(command,  "domain") == 0) {
         R = getRelation(readNumber());
-        domain(R);
+      domain(R);
     } else if (strcmp(command,  "codomain") == 0) {
         R = getRelation(readNumber());
-        codomain(R);
+      codomain(R);
     } else if (strcmp(command,  "injective") == 0) {
         R = getRelation(readNumber());
         A = getSet(readNumber());
@@ -841,4 +822,25 @@ int readNumber() {
         exit(1);
     }
     return atoi(number);
+}
+
+//tiskne doplněk množiny A
+void complement(set *a) {
+    char *compl;
+    int count = 0;
+
+    for(int i = 0; i < strlen(univerzium); i++) {
+        for(int j = 0; j < a->len; j++){
+            if(strcmp(a->items[i], univerzium[j]) != 0) {
+                count++;
+            } else if(strcmp(a->items[i], univerzium[j]) == 0) {
+                count = 0;
+                break;
+            }
+        }
+        if(count > 0) {
+            strcat(compl, univerzium[i]);
+        }
+    }
+    printf("Complement is: %s\n", compl);
 }
