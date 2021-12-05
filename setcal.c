@@ -735,19 +735,19 @@ void processOperation(char *input) {
         card(A);
     } else if (strcmp(command,  "complement") == 0) {
         A = getSet(readNumber());
-        // complement(A);
+        complement(A);
     } else if (strcmp(command,  "union") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
-        // union(A,B);
+        union_(A,B);
     } else if (strcmp(command,  "intersect") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
-//      intersect(A, B);
+        intersect(A, B);
     } else if (strcmp(command,  "minus") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
-//      minus(A, B);
+        minus(A, B);
     } else if (strcmp(command,  "subseteq") == 0) {
         A = getSet(readNumber());
         B = getSet(readNumber());
@@ -768,19 +768,19 @@ void processOperation(char *input) {
         symmetric(R);
     } else if (strcmp(command,  "antisymmetric") == 0) {
         R = getRelation(readNumber());
-//      antisymmetric(R);
+        antisymmetric(R);
     } else if (strcmp(command,  "transitive") == 0) {
         R = getRelation(readNumber());
-//      transitive(R);
+        transitive(R);
     } else if (strcmp(command,  "function") == 0) {
         R = getRelation(readNumber());
-//      function(R);
+        function(R);
     } else if (strcmp(command,  "domain") == 0) {
         R = getRelation(readNumber());
-//      domain(R);
+        domain(R);
     } else if (strcmp(command,  "codomain") == 0) {
         R = getRelation(readNumber());
-//      codomain(R);
+        codomain(R);
     } else if (strcmp(command,  "injective") == 0) {
         R = getRelation(readNumber());
         A = getSet(readNumber());
