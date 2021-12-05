@@ -215,7 +215,7 @@ void domain(relation *a){
     printf("}\n");
 }
 
-//
+//tiskne obor hodnot funkce R (lze aplikovat i na relace - druhé prvky dvojic)
 void codomain(relation *a){
     printf("H(f): {%s", a->cpl[0].second);
     for (int i = 1; i < a->len; i++){
