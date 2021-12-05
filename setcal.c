@@ -434,7 +434,6 @@ int main (int argc, char *argv[]) {
         exit(1);
     }
     char *fileName = argv[1];
-    printf("file name is {%s}", fileName);
     file = fopen(fileName, "r");
     if (file == NULL) {
         fprintf(stderr, "File does not exist");
@@ -465,9 +464,8 @@ int main (int argc, char *argv[]) {
             processRelation(inputString, lineNumber);
         }
     }
-
     // Provedeme operace
-    while (strlen(inputString) == 0) {
+    while (strlen(inputString) != 0) {
         processOperation(inputString);
         readString(file, INPUT_LEN, &lineNumber);
     }
@@ -501,8 +499,12 @@ char *readString(FILE *fp, size_t size, int *line) {
         case 'C':
             break;
         default:
-            printf("Unknown operation: operation {%c} is not supported, exiting program\n", operation);
-            exit(1);
+            if (strlen(str) != 0) {
+                printf("Unknown operation: operation {%c} is not supported, exiting program\n", operation);
+                exit(1);
+            } else {
+                exit(0);
+            }
     }
     *line += 1;
     return realloc(str, sizeof(*str)*len);
