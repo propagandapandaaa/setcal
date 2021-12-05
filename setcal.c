@@ -105,16 +105,16 @@ void card(set *a){
     printf("Number of elements is: %d\n", i);
 }
 
-/tiskne doplněk množiny A
+//tiskne doplněk množiny A
 void complement(set *a) {
     char *compl;
     int count = 0;
 
-    for(int i = 0; i < strlen(univerzium); i++) {
+    for(int i = 0; i < strlen(univerzum); i++) {
         for(int j = 0; j < a->len; j++){
             if(strcmp(a->items[i], univerzium[j]) != 0) {
                 count++; 
-            } else if(strcmp(a->items[i], univerzium[j])) == 0) {
+            } else if(strcmp(a->items[i], univerzium[j]) == 0) {
                 count = 0;
                 break;
             }
@@ -127,67 +127,56 @@ void complement(set *a) {
 }
 
 //tiskne sjednonecí monžin A a B
-void union(set *a, set *b) {
+void union_(set *a, set *b) {
     char *u = getElements(a);
     int count = 0;
 
     for(int i = 0; i < a->len; i++) {
-        for(int j = 0; j < b->len; j++)
-            if(strcmp(a->items[j], b->items[i]) !=0) {
+        for(int j = 0; j < b->len; j++){
+            if(strcmp(a->items[j], b->items[i]) != 0) {
                 count++;
         } else if(strcmp(a->items[j], b->items[i]) == 0) {
                 count = 0;
                 break;
         }
+        }
     }
     if(count > 0) {
         strcat(u, b->items[i]);
     }
-    printf("Union is: %s\n", u)
+    printf("Union is: %s\n", u);
 }
 
 //tiskne průnik množin A a B
-void intersect(set *a,set *b)
-{
-    for(int i=0;i<a->len;i++)
-    {
-        for(int j=0;j<b->len;j++)
-        {
-            if(a->items[i]!=b->items[j])
-            {
-                for(int k=i;k<a->len-1;k++)
-                {
-                    a->items[i]=a->items[i+1];
+void intersect(set *a,set *b){
+    for(int i = 0; i < a->len; i++){
+        for(int j = 0; j < b->len; j++){
+            if(a->items[i] != b->items[j]){
+                for(int k = i; k < a->len-1; k++){
+                    a->items[i] = a->items[i+1];
                 }
                 realloc(a, sizeof(a));
             }            
         }
     }
-    for(int l = 0; l < a->len; l++)
-    {
-        printf("Intersection of sets is : %s",a->items[l]);
+    for(int l = 0; l < a->len; l++){
+        printf("Intersection of sets is : %s", a->items[l]);
     }
 }
 
 //tiskne rozdíl množin A \ B
-void minus(set *a,set *b)
-{
-    for(int i=0;i<a->len;i++)
-    {
-        for(int j=0;j<b->len;j++)
-        {
-            if(a->items[i]==b->items[j])
-            {
-                for(int k=i;k<a->len-1;k++)
-                {
+void minus(set *a,set *b){
+    for(int i=0;i<a->len;i++){
+        for(int j=0;j<b->len;j++){
+            if(a->items[i]==b->items[j]){
+                for(int k=i;k<a->len-1;k++){
                     a->items[i]=a->items[i+1];
                 }
                 realloc(a, sizeof(a));
             }            
         }
     }
-    for(int l = 0; l < a->len; l++)
-    {
+    for(int l = 0; l < a->len; l++){
         printf("Difference of sets is : %s",a->items[l]);
     }
 
@@ -317,7 +306,7 @@ void antisymmetric(relation *a) {
 }
 
 //tiskne true nebo false, jestli je relace tranzitivní.
-void transitive() {
+void transitive(relation *a) {
     int t = 0;
     for(int i = 0; i < a->len; i++) {
         if(a->cpl[i].first != a->cpl[i].second) {
