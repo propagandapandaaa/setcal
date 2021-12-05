@@ -382,7 +382,7 @@ void codomain(relation *a){
 }
 
 //tiskne true nebo false, jestli je funkce R injektivní. A a B jsou množiny; a∈A, b∈B, (a,b)∈R
-bool injective(set *a, set *b, relation *r){
+bool function(set *a, set *b, relation *r){
 
     //kontroluje zda ke kazdemu prvku A je prirazeny alespon jeden prvek B 
     for(int i = 0; i < a->len; i++){
