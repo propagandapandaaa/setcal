@@ -217,6 +217,7 @@ bool equals(set *a, set *b)
     printf("Sets are equal: true");
 }
 
+
 bool surjective(set *a, set *b) {
 
     if(b->len <= a->len){
@@ -229,7 +230,7 @@ bool surjective(set *a, set *b) {
 
 }
 
-
+//Work in progress
 bool injective(set *a, set *b, relation *r){
 
     //Kontroluje zda ke kazdemu prvku A je prirazeny alespon jeden prvek B 
